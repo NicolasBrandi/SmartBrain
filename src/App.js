@@ -4,6 +4,7 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import Rank from './components/Rank/Rank';
 import ParticleBackground from './components/Particles/Particles';
+import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import './App.css';
 
 const setupClarifaiOptions = (imageURL) => {
@@ -43,16 +44,18 @@ class App extends Component {
     super()
     this.state = {
       input: '',
+      imageURL: '',
     }
   }
 
   onInputChange = (event) => {
-    console.log(event.target.value)
+    this.setState({input: event.target.value})
   }
 
-  onButtonClick = () => {
+  onButtonSubmit = () => {
     console.log('click')
-    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiOptions)
+    this.setState({imageURL: this.state.input})
+    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiOptions(this.state.imageURL))
     .then(response => response.json())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
@@ -67,9 +70,9 @@ class App extends Component {
         <Rank />
         <ImageLinkForm 
           onInputChange={this.onInputChange}
-          onButtonClick={this.onButtonClick}
+          onButtonSubmit={this.onButtonSubmit}
         />
-        {/* <FaceRecognition /> */}
+        <FaceRecognition imageURL= {this.state.imageURL}/>
       </div>
     );
   }
